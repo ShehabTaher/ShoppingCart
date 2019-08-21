@@ -8,6 +8,11 @@ CKEDITOR.editorConfig = function( config ) {
 	// For complete reference see:
 	// https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html
 
+    var roxyFileman = '/fileman/index.html?integration=ckeditor';
+    config.filebrowserBrowseUrl = roxyFileman;
+    config.filebrowserImageBrowseUrl = roxyFileman + '&type=image';
+    config.removeDialogTabs = 'link:upload;image:upload';
+
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
