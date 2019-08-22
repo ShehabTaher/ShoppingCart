@@ -30,3 +30,11 @@ table.sorting tr:not(.home)  {
 .ui-state-highlight {
     border: 1px dashed #b8acac;
 }
+
+div.new-cat {
+    margin-top: 30px;
+    position:relative;
+}
+span.ajax-text {
+    display:none;
+}
