@@ -16,13 +16,13 @@
     </p>
 </div>
 
-@if (! Model.Any())
+@if (!Model.Any())
 {
     <h1 class="text-center">There are no categories.</h1>
 }
 else
 {
-    <table class="table sorting" id="pages">
+    <table class="table sorting categories" id="pages">
         <tr class="home">
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -32,8 +32,9 @@ else
 
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="id_@item.Id">
                 <td>
+                    <div class="ajaxdivtd"></div>
                     @Html.EditorFor(modelItem => item.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
 
 
@@ -52,7 +53,7 @@ else
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script>
         $(function () {
-          
+
             /*
             Add new Category
             */
@@ -116,22 +117,83 @@ else
 
                         }
                     }
-                    });
+                });
             });
-
-
+            //////////////////////////////
+            /*
+          Reorder Categories
+          */
             $("table#pages tbody").sortable({
                 items: "tr:not(.home)",
                 palceholder: "ui-state-heihlight",
                 update: function () {
                     var ids = $("table#pages tbody").sortable("serialize");
-                    var url = "/admin/pages/RecordPages";
+                    var url = "/admin/Shop/ReorderCategories";
                     $.post(url, ids, function (data) {
 
                     });
                 }
             });
-            ////////////
+
+            //////////////////////////////
+            /*
+          Confirm category Deletion
+    */
+            $("body").on("click", "a.delete", function () {
+                if (!confirm("Confirm page deletion")) return false;
+            });
+            ///////////
+
+
+
+            /*
+            Rename Category
+                */
+            var originalTextBoxValue;
+            $("table#pages input.text-box").dblclick(function () {
+                originalTextBoxValue = $(this).val();
+                $(this).attr("readonly", false);
+            });
+
+            $("table#pages input.text-box").keyup(function (e) {
+                if (e.keyCode == 13) {
+                    $(this).blur();
+                }
+            });
+
+            $("table#pages input.text-box").blur(function (e) {
+                var $this = $(this);
+                var ajaxdivtd = $this.parent().find(".ajaxdivtd");
+                var newCatName = $this.val();
+                var id = $this.parent().parent().attr("id").substring(3);
+                var url = "/admin/shop/RenameCategory"
+
+                if (newCatName.length < 2) {
+                    alert("Category name must be at least 2 characters long.");
+                    $this.attr("readonly", true);
+                    return false;
+                }
+
+                $.post(url, { newCatName: newCatName, id: id }, function (data) {
+                    var response = data.trim();
+
+                    if (response == "titletaken") {
+                        $this.val(originalTextBoxValue);
+                        ajaxdivtd.html("<span class='alert alert-danger'>That title is taken! </span>").show();
+                    } else {
+                        ajaxdivtd.html("<span class='alert alert-success'>The Category name has been changed! </span>").show();
+                    }
+                    setTimeout(function () {
+                        ajaxdivtd.fadeOut("fast", function () {
+                            ajaxdivtd.html("");
+                        });
+                    },2000);
+                }).done(function () {
+                    $this.attr("readonly", true);
+                });
+
+            });
+            ///////////////////////
         });
     </script>
 
