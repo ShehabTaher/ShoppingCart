@@ -1,0 +1,11 @@
+﻿@model IEnumerable<ShoppingCart.Models.ViewModels.Shop.CategoryVM>
+
+<h3>Categories</h3>
+
+@foreach (var item in Model) {
+  <li>
+      <a href="/Shop/category/@item.Slug.ToLower()">@item.Name</a>
+  </li>
+}
+
+

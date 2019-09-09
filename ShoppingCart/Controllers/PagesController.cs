@@ -54,5 +54,35 @@ namespace ShoppingCart.Controllers
 
             return View(model);
         }
+
+
+        public ActionResult PagesMenuPartial()
+        {
+            // Declare a list of PageVM
+            List<PageVM> pageVMList;
+            // Get aal pages except home
+            using (Db db = new Db())
+            {
+                pageVMList = db.Pages.ToArray().OrderBy(x => x.Sorting).Where(x => x.Slug != "home").Select( x=> new PageVM(x)).ToList();
+            }
+                // Return partial view with list
+                return PartialView(pageVMList);
+        }
+
+
+        public ActionResult SidebarPartial()
+        {
+            // Declare model
+            SidebarVM model;
+            // Init model
+            using(Db db = new Db())
+            {
+                SidebarDTO dto = db.Sidebar.Find(1);
+
+                model = new SidebarVM(dto);
+            }
+            // Return parial view with model
+            return View();
+        }
     }
 }
