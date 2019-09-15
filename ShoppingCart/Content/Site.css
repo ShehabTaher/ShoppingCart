@@ -64,3 +64,7 @@ span.ajaxmsg{
     position: relative;
     top:10px;
 }
+
+.ib {
+    display:inline-block !important;
+}
